@@ -1,12 +1,12 @@
+# EXCEPTIONS
+
 # Emacs safe copy
 *~
-# Generated Files and parsed.
-E_*
-F_*
-P_*
-J_*
+
+
 *.jar
-parsed*
+!rllab.jar
+
 
 # Mac OSX files
 .DS_Store
