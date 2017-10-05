@@ -125,11 +125,17 @@ public class QLearningController extends Controller {
 
 				
 				/* TODO: IMPLEMENT Q-UPDATE HERE! */
+				int action = selectAction(new_state); /* Make sure you understand how it selects an action */
+				double q_s_a = Qtable.get(prev_stateaction);
+				double alpha = alpha(Ntable.get(prev_stateaction));
+				double max_q_s_a_gamma = GAMMA_DISCOUNT_FACTOR * getMaxActionQValue(new_state + action);
+				double reward = StateAndReward.getRewardAngle(previous_angle, previous_vx, previous_vy);
+				Qtable.put(prev_stateaction, q_s_a + alpha*(reward + max_q_s_a_gamma - q_s_a));
 				
 				/* See top for constants and below for helper functions */
 				
 				
-				int action = selectAction(new_state); /* Make sure you understand how it selects an action */
+				
 
 				performAction(action);
 				
