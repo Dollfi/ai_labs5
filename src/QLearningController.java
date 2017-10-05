@@ -124,6 +124,13 @@ public class QLearningController extends Controller {
 	/* Main decision loop. Called every iteration by the simulator */
 	public void tick(int currentTime) {
 		iteration++;
+		if (paused){
+			String new_state = StateAndReward.getStateAngle(angle.getValue(), vx.getValue(), vy.getValue());
+			System.out.println("New State: " + new_state);
+			System.out.println("vx = " + vx.getValue());
+			System.out.println("vy = " + vy.getValue());
+			System.out.println("angle = " + angle.getValue());
+		}
 		
 		if (!paused) {
 			String new_state = StateAndReward.getStateAngle(angle.getValue(), vx.getValue(), vy.getValue());
@@ -154,15 +161,14 @@ public class QLearningController extends Controller {
 
 				
 				/* TODO: IMPLEMENT Q-UPDATE HERE! */
-				int action = selectAction(new_state); /* Make sure you understand how it selects an action */
 				double q_s_a = Qtable.get(prev_stateaction);
 				double alpha = alpha(Ntable.get(prev_stateaction));
-				double max_q_s_a_gamma = GAMMA_DISCOUNT_FACTOR * getMaxActionQValue(new_state + action);
+				double max_q_s_a_gamma = GAMMA_DISCOUNT_FACTOR * getMaxActionQValue(new_state);
 				double reward = StateAndReward.getRewardAngle(previous_angle, previous_vx, previous_vy);
 				Qtable.put(prev_stateaction, q_s_a + alpha*(reward + max_q_s_a_gamma - q_s_a));
 
 				/* See top for constants and below for helper functions */
-
+				int action = selectAction(new_state); /* Make sure you understand how it selects an action */
 				performAction(action);
 				
 				/* Only print every 10th line to reduce spam */

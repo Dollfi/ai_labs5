@@ -36,12 +36,7 @@ public class StateAndReward {
 
 	/* Reward function for the angle controller */
 	public static double getRewardAngle(double angle, double vx, double vy) {
-
-		/* TODO: IMPLEMENT THIS FUNCTION */
-		
 		double reward = Math.PI-Math.abs(angle);
-		
-
 		return reward;
 	}
 
