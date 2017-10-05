@@ -3,10 +3,36 @@ public class StateAndReward {
 	
 	/* State discretization function for the angle controller */
 	public static String getStateAngle(double angle, double vx, double vy) {
-
+		final int nrValues = 6;
 		/* TODO: IMPLEMENT THIS FUNCTION */
-
-		String state = "OneStateToRuleThemAll";
+		String state;
+		
+		int disVal = discretize2(angle, nrValues, -Math.PI, Math.PI );
+		
+		switch (disVal) {
+		case 0:
+			state="SW";
+			break;
+		case 1: 
+			state = "W";
+			break;
+		case 2: 
+			state = "NW";
+			break;
+		case 3: 
+			state = "NE";
+			break;
+		case 4: 
+			state = "E";
+			break;
+		case 5: 
+			state = "SE";
+			break;
+		default: state="NOPE";
+		
+		}
+		
+			
 		
 		return state;
 	}
@@ -16,7 +42,8 @@ public class StateAndReward {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
 		
-		double reward = 0;
+		double reward = Math.PI-Math.abs(angle);
+		
 
 		return reward;
 	}
