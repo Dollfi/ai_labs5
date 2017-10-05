@@ -38,6 +38,7 @@ public class TutorialController extends Controller {
 	}
 
     public void tick(int currentTime) {
+<<<<<<< HEAD
     	System.out.println(new StringBuilder()
     			.append("Angle - ")
     			.append(angle.getValue())
@@ -46,6 +47,16 @@ public class TutorialController extends Controller {
     			.append(vy.getValue())
     			.append("vx - ")
     			.append(vx.getValue()).toString());
+=======
+
+    	System.out.println("--------------------------------------------");
+    	System.out.println("vx: "+vx.getValue());
+    	System.out.println("vy: "+ vy.getValue());
+    	System.out.println("angle: "+ angle.getValue());
+    		
+    	/* TODO: Insert your code here */
+    	
+>>>>>>> 33acc9e2c1a618aa9c7984065f4813e0cb89a3d7
     }
 
 }
