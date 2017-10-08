@@ -42,10 +42,44 @@ public class StateAndReward {
 
 	/* State discretization function for the full hover controller */
 	public static String getStateHover(double angle, double vx, double vy) {
-
+		final int nrValues = 6;
 		/* TODO: IMPLEMENT THIS FUNCTION */
-
-		String state = "OneStateToRuleThemAll2";
+		int disValAng = discretize2(angle, nrValues, -Math.PI, Math.PI );
+		String state= null;
+	
+		switch (disValAng) {
+		case 0:
+			state="SW";
+			break;
+		case 1: 
+			state = "W";
+			break;
+		case 2: 
+			state = "NW";
+			break;
+		case 3: 
+			state = "NE";
+			break;
+		case 4: 
+			state = "E";
+			break;
+		case 5: 
+			state = "SE";
+			break;
+		default: state="NOPE";
+		}
+		if(vy>=0 && vx>=0) {
+			state= state+" falling right";
+		}
+		else if(vy<0 && vx>=0) {
+			state = state + " rising right";
+		}
+		else if(vy>=0 && vx<0) {
+			state = state + " falling left";
+		}
+		else if(vy<0 && vx<0) {
+			state = state + " rising left";
+		}
 		
 		return state;
 	}
@@ -54,9 +88,7 @@ public class StateAndReward {
 	public static double getRewardHover(double angle, double vx, double vy) {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
-		
-		double reward = 0;
-
+		double reward = 5*Math.PI-5*Math.abs(angle) - Math.abs(vy) - Math.abs(vx);
 		return reward;
 	}
 
@@ -120,5 +152,6 @@ public class StateAndReward {
 
 			return (int) (ratio * nrValues);
 		}
+		
 
 }
