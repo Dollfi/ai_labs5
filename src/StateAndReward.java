@@ -1,45 +1,18 @@
 public class StateAndReward {
+	
+	private static final double MAX_ANGLE = Math.PI - 1;
 
-	private static final double max_vx = 3.0;
-	private static final int max_vx_states = 4;
-	
-	private static final double max_vy = 3.0;
-	private static final int max_vy_states = 4;
-	
-	
-	
+	private static final int MAX_VX_STATES = 3;
+	private static final double MAX_X_SPEED = Math.PI / 2;
+
+	private static final int MAX_VY_STATES = 4;
+	private static final double MAX_Y_SPEED = Math.PI;
 	
 	/* State discretization function for the angle controller */
 	public static String getStateAngle(double angle, double vx, double vy) {
-		final int nrValues = 6;
-		/* TODO: IMPLEMENT THIS FUNCTION */
-		String state;
+		int discreteAng = discretize2(angle, 10, -MAX_ANGLE, MAX_ANGLE); 
 		
-		int disVal = discretize2(angle, nrValues, -Math.PI, Math.PI );
-		
-		switch (disVal) {
-		case 0:
-			state="SW";
-			break;
-		case 1: 
-			state = "W";
-			break;
-		case 2: 
-			state = "NW";
-			break;
-		case 3: 
-			state = "NE";
-			break;
-		case 4: 
-			state = "E";
-			break;
-		case 5: 
-			state = "SE";
-			break;
-		default: state="NOPE";
-		
-		}
-		return state;
+		return "" + discreteAng;
 	}
 
 	/* Reward function for the angle controller */
@@ -50,37 +23,43 @@ public class StateAndReward {
 
 	/* State discretization function for the full hover controller */
 	public static String getStateHover(double angle, double vx, double vy) {
-		final int nrValues = 6;
-		/* TODO: IMPLEMENT THIS FUNCTION */
-		int disValAng = discretize2(angle, nrValues, -Math.PI, Math.PI );
-		String state = getStateAngle(angle, vx, vy);
-		int stateVx = discretize(vx, max_vx_states, -max_vx, max_vx);
-		int stateVy = discretize(vy, max_vy_states, -max_vy, max_vy);
-		return state + ":" + stateVx + ":" + stateVy;
+		
+		String angleState = getStateAngle(angle, vx, vy);
+		int discreteVx = discretize(vx, MAX_VX_STATES, -MAX_X_SPEED, MAX_X_SPEED);
+		int discreteVy = discretize(vy, MAX_VY_STATES, -MAX_Y_SPEED, MAX_Y_SPEED);
+		
+		return angleState + ":" + discreteVx + ":" + discreteVy;	
+		
 	}
 
 	/* Reward function for the full hover controller */
 	public static double getRewardHover(double angle, double vx, double vy) {
 
-		/* TODO: IMPLEMENT THIS FUNCTION */
-		//double reward = 5*Math.PI-5*Math.abs(angle) - Math.abs(vy) - Math.abs(vx);
-		double reward = getRewardAngle(angle, vx, vy) + getRewardVx(vx) + getRewardVy(vy);
-		return reward;
+		double angleReward = getRewardAngle(angle, vx, vy);
+		double vxReward = getXSpeedReward(vx);
+		double vyReward = getYSpeedReward(vy);
+		
+
+		return angleReward + vxReward + vyReward;
 	}
-	
-	public static double getRewardVx(double vx) {
-		if (Math.abs(vx) >= max_vx) {
+	private static double getYSpeedReward(double speed) {
+		double abs = Math.abs(speed);
+		if (abs >= MAX_Y_SPEED) {
 			return 0;
 		}
-		return Math.pow((1 - Math.abs(vx))/max_vx, 2);
+		return MAX_Y_SPEED - abs;
 	}
 	
-	public static double getRewardVy(double vy) {
-		if (Math.abs(vy) >= max_vy) {
+	private static double getXSpeedReward(double speed) {
+		double abs = Math.abs(speed);
+		if (abs >= MAX_X_SPEED) {
 			return 0;
 		}
-		return Math.pow((1 - Math.abs(vy))/max_vy, 2);
+		return MAX_X_SPEED - abs;
 	}
+	
+	
+	
 
 	// ///////////////////////////////////////////////////////////
 		// discretize() performs a uniform discretization of the
