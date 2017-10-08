@@ -1,5 +1,13 @@
 public class StateAndReward {
 
+	private static final double max_vx = 3.0;
+	private static final int max_vx_states = 4;
+	
+	private static final double max_vy = 3.0;
+	private static final int max_vy_states = 4;
+	
+	
+	
 	
 	/* State discretization function for the angle controller */
 	public static String getStateAngle(double angle, double vx, double vy) {
@@ -45,51 +53,33 @@ public class StateAndReward {
 		final int nrValues = 6;
 		/* TODO: IMPLEMENT THIS FUNCTION */
 		int disValAng = discretize2(angle, nrValues, -Math.PI, Math.PI );
-		String state= null;
-	
-		switch (disValAng) {
-		case 0:
-			state="SW";
-			break;
-		case 1: 
-			state = "W";
-			break;
-		case 2: 
-			state = "NW";
-			break;
-		case 3: 
-			state = "NE";
-			break;
-		case 4: 
-			state = "E";
-			break;
-		case 5: 
-			state = "SE";
-			break;
-		default: state="NOPE";
-		}
-		if(vy>=0 && vx>=0) {
-			state= state+" falling right";
-		}
-		else if(vy<0 && vx>=0) {
-			state = state + " rising right";
-		}
-		else if(vy>=0 && vx<0) {
-			state = state + " falling left";
-		}
-		else if(vy<0 && vx<0) {
-			state = state + " rising left";
-		}
-		
-		return state;
+		String state = getStateAngle(angle, vx, vy);
+		int stateVx = discretize(vx, max_vx_states, -max_vx, max_vx);
+		int stateVy = discretize(vy, max_vy_states, -max_vy, max_vy);
+		return state + ":" + stateVx + ":" + stateVy;
 	}
 
 	/* Reward function for the full hover controller */
 	public static double getRewardHover(double angle, double vx, double vy) {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
-		double reward = 5*Math.PI-5*Math.abs(angle) - Math.abs(vy) - Math.abs(vx);
+		//double reward = 5*Math.PI-5*Math.abs(angle) - Math.abs(vy) - Math.abs(vx);
+		double reward = getRewardAngle(angle, vx, vy) + getRewardVx(vx) + getRewardVy(vy);
 		return reward;
+	}
+	
+	public static double getRewardVx(double vx) {
+		if (Math.abs(vx) >= max_vx) {
+			return 0;
+		}
+		return Math.pow((1 - Math.abs(vx))/max_vx, 2);
+	}
+	
+	public static double getRewardVy(double vy) {
+		if (Math.abs(vy) >= max_vy) {
+			return 0;
+		}
+		return Math.pow((1 - Math.abs(vy))/max_vy, 2);
 	}
 
 	// ///////////////////////////////////////////////////////////
